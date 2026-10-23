@@ -30,6 +30,7 @@ import re
 import shutil
 import subprocess
 import sys
+import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))          # .../src
 ROOT = os.path.dirname(HERE)                               # 仓库根
@@ -55,31 +56,39 @@ def sh(cmd, cwd=ROOT, timeout=180):
 def get_token():
     """从 git credential manager 取 github.com 的令牌。
 
-    注意：Git Credential Manager 在**无 TTY** 环境（被 subprocess 调起时）
-    会尝试弹窗/浏览器交互而挂起，必须设 GIT_TERMINAL_PROMPT=0 让它
-    直接返回已存储的凭据，否则会一直等到超时。
+    两个已实测的坑：
+    1) 在**无 TTY** 环境（被 subprocess 调起时）GCM 会尝试弹窗交互而挂起，
+       必须设 GIT_TERMINAL_PROMPT=0 让它直接返回已存凭据。
+    2) 绝不能设 GCM_INTERACTIVE=never —— 那会连已存凭据都读不到，
+       直接报 "Cannot prompt because user interactivity has been disabled"。
+
+    另外 GCM 偶尔会因为并发/锁竞争而慢到超时，故做多��重试 + 退避。
     """
     env = dict(os.environ)
-    # 只设 GIT_TERMINAL_PROMPT=0：禁止 git 弹终端提示，但仍允许 GCM 读取已存凭据。
-    # 千万不要设 GCM_INTERACTIVE=never —— 实测那会连已存凭据也读不到，
-    # 直接报 "Cannot prompt because user interactivity has been disabled"。
     env["GIT_TERMINAL_PROMPT"] = "0"
-    for attempt in range(3):
+    last_err = ""
+    for attempt in range(5):
         try:
             r = subprocess.run(["git", "credential", "fill"],
                                input="protocol=https\nhost=github.com\n\n",
                                capture_output=True, text=True, encoding="utf-8",
-                               errors="replace", timeout=20, env=env)
+                               errors="replace", timeout=45, env=env)
             for line in (r.stdout or "").splitlines():
                 if line.startswith("password="):
                     tok = line.split("=", 1)[1].strip()
                     if tok:
+                        if attempt:
+                            log(f"第 {attempt + 1} 次尝试取得凭据")
                         return tok
+            last_err = (r.stderr or "").strip()[:200] or "返回中无 password 字段"
         except subprocess.TimeoutExpired:
-            log(f"读取凭据超时（第 {attempt + 1} 次），重试…")
+            last_err = "超时"
         except Exception as e:  # noqa: BLE001
-            log(f"读取凭据失败: {e}")
+            last_err = str(e)
             break
+        log(f"读取凭据失败（{last_err}），第 {attempt + 1} 次重试…")
+        time.sleep(2 + attempt * 2)
+    log(f"读取凭据最终失败: {last_err}")
     return None
 
 
@@ -202,7 +211,16 @@ def commit_and_push(token):
 
         r = sh(["git", "push", "origin", BRANCH], timeout=300)
         if r.returncode != 0:
-            log(f"push 失败: {r.stderr[-800:]}")
+            log(f"push 失败（第 1 次）: {r.stderr[-300:]}")
+            # 网络抖动 / 远端瞬时不可用是常态，做退避重试
+            for retry in range(3):
+                time.sleep(5 * (retry + 1))
+                log(f"重试 push（第 {retry + 2} 次）…")
+                r = sh(["git", "push", "origin", BRANCH], timeout=300)
+                if r.returncode == 0:
+                    log(f"已推送: {msg}")
+                    return True
+                log(f"  仍失败: {r.stderr[-200:]}")
             return False
         log(f"已推送: {msg}")
         return True
