@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# 运行时生成的原始抓取/缓存（不进仓库）
+src/data/incoming/
+src/data/history/
+src/data/processed/
+src/data/realtime/
+src/data/*.txt
+src/data/trade_calendar.json
+src/output/
+*.raw
+_barchart_raw_*
+
+# 内部/敏感目录（含本地记忆，切勿公开）
+.workbuddy/
+
+# 合成/占位数据（真实 OI 面板就绪前不发布）
+src/output/dashboard.html

@@ -1,0 +1,19 @@
+{
+  "products": {
+    "ZS": {"name": "CBOT 大豆 Soybeans", "unit": "美分/蒲式耳"},
+    "ZM": {"name": "CBOT 豆粕 Soybean Meal", "unit": "美元/吨"},
+    "ZC": {"name": "CBOT 玉米 Corn", "unit": "美分/蒲式耳"},
+    "ZL": {"name": "CBOT 豆油 Soybean Oil", "unit": "美分/磅"}
+  },
+  "contract_selection": "auto_by_oi",
+  "manual_expiries": {},
+  "scoring": {
+    "delta_min": 0.10,
+    "delta_max": 0.25,
+    "min_days_rise": 2,
+    "iv_change_tol": 0.0,
+    "near_strike_pct": 0.06,
+    "top_n_strikes": 12
+  },
+  "demo": false
+}

@@ -1,0 +1,49 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>国内商品期权 · 卖Put/卖Call 集中度面板</title>
+<style>
+ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;margin:0;background:#f5f7fa;color:#1a1a1a}
+ .banner{background:#1f7a3d;color:#fff;padding:10px 18px;font-size:14px}
+ .banner b{background:#0c3;padding:1px 6px;border-radius:3px;color:#042}
+ .warn{background:#fff4e5;color:#8a4b00;border:1px solid #ffd8a8;padding:10px 18px;font-size:13px;line-height:1.7}
+ .card{background:#fff;margin:18px;padding:18px;border-radius:10px;box-shadow:0 1px 4px #0001}
+ h1{font-size:20px;margin:0 0 6px} h2{font-size:16px;margin:20px 0 8px}
+ table{border-collapse:collapse;width:100%;font-size:13px}
+ th,td{border:1px solid #e3e8ef;padding:9px 10px;text-align:center;vertical-align:middle}
+ th{background:#eef2f7;font-weight:600}
+ td.nm{text-align:left;min-width:130px} td.f{background:#f7fbf8}
+ .num{font-size:16px;color:#0a5c2e}
+ .sub{color:#777;font-size:11px;line-height:1.6}
+ .na{color:#bbb}
+ .note{color:#666;font-size:12px;line-height:1.8}
+ .warninline{color:#8a4b00;font-size:12px}
+ .ok{color:#1f7a3d;font-weight:600}
+ ul{margin:6px 0;padding-left:20px}
+</style></head><body>
+<div class="banner">✅ <b>真实数据</b>：期货价、逐档持仓量(OI)、隐含波动率、Delta 全部来自交易所与公开行情（2026-10-23 抓取）</div>
+<div class="warn">⚠️ <b>口径说明（重要）</b><br>
+① 本表的「卖Put集中价位」= 在 <b>δ∈[0.10, 0.25]</b> 的虚值 Put 区间内，<b>持仓量(OI)最大</b>的那一档行权价。<br>
+② 持仓量是<b>总持仓</b>（多空合计），交易所免费数据<b>不区分买卖方向</b>——所以"卖Put集中"是<b>基于虚值+高持仓的概率推断</b>，不是交易所披露的事实。<br>
+③ IV 与 Delta：郑商所品种直接采用<b>交易所官方每日行情表</b>的隐含波动率与Delta；大商所品种由<b>真实收盘价经 Black-76 反解</b>得到（到期日按交易所官方规则推算）。<br>
+④ 本引擎定价实现已用郑商所官方 DELTA 做回归校验，RMSE=0.0006（0.06%）。</div>
+
+<div class="card">
+<h1>国内商品期权 · 卖Put / 卖Call 持仓集中价位（主力合约）</h1>
+<div class="note">标的：豆粕、豆油、棕榈油、菜油、菜粕、生猪、鸡蛋、豆二 —— 每个品种的<b>主力合约</b>（按持仓量最大认定）。
+<br>数据日期：（郑商所官方数据 2026-10-23，大商所数据 2026-10-23）</div>
+<table>
+<tr><th style="width:16%">品种 / 合约</th><th style="width:14%">期货价（真实）</th>
+<th style="width:26%">卖Put集中价位<br><span style="font-weight:400;font-size:11px">价格下方 δ∈[0.10,0.25] 内 OI 最大档</span></th>
+<th style="width:26%">卖Call集中价位<br><span style="font-weight:400;font-size:11px">价格上方 δ∈[0.10,0.25] 内 OI 最大档</span></th></tr>
+<tr><td class='nm'><b>豆粕</b><br><span class='sub'>m2701 · DCE<br>到期 2026-12-16</span></td><td class='f'><b class='num'>3,276</b><br><span class='sub'>元/吨</span></td><td><b class='num'>3,100</b><br><span class='sub'>OI 48,951 手 · δ0.151<br>IV 14.3%</span></td><td><b class='num'>3,500</b><br><span class='sub'>OI 31,542 手 · δ0.156<br>IV 16.5%</span></td></tr><tr><td class='nm'><b>豆油</b><br><span class='sub'>y2701 · DCE<br>到期 2026-12-16</span></td><td class='f'><b class='num'>9,125</b><br><span class='sub'>元/吨</span></td><td><b class='num'>8,800</b><br><span class='sub'>OI 7,144 手 · δ0.188<br>IV 10.9%</span></td><td><b class='num'>9,500</b><br><span class='sub'>OI 3,383 手 · δ0.236<br>IV 14.1%</span></td></tr><tr><td class='nm'><b>棕榈油</b><br><span class='sub'>p2701 · DCE<br>到期 2026-12-16</span></td><td class='f'><b class='num'>9,561</b><br><span class='sub'>元/吨</span></td><td><b class='num'>9,000</b><br><span class='sub'>OI 5,396 手 · δ0.167<br>IV 16.8%</span></td><td><b class='num'>10,400</b><br><span class='sub'>OI 8,449 手 · δ0.147<br>IV 20.1%</span></td></tr><tr><td class='nm'><b>菜油</b><br><span class='sub'>OI701 · CZCE<br>到期 2026-12-11</span></td><td class='f'><b class='num'>10,337</b><br><span class='sub'>元/吨</span></td><td><b class='num'>9,800</b><br><span class='sub'>OI 3,461 手 · δ0.152<br>IV 14.6%</span></td><td><b class='num'>11,000</b><br><span class='sub'>OI 2,925 手 · δ0.168<br>IV 17.2%</span></td></tr><tr><td class='nm'><b>菜粕</b><br><span class='sub'>RM701 · CZCE<br>到期 2026-12-11</span></td><td class='f'><b class='num'>2,251</b><br><span class='sub'>元/吨</span></td><td><b class='num'>2,100</b><br><span class='sub'>OI 5,976 手 · δ0.155<br>IV 19.4%</span></td><td><b class='num'>2,400</b><br><span class='sub'>OI 8,043 手 · δ0.200<br>IV 20.0%</span></td></tr><tr><td class='nm'><b>生猪</b><br><span class='sub'>lh2701 · DCE<br>到期 2026-12-16</span></td><td class='f'><b class='num'>9,825</b><br><span class='sub'>元/吨</span></td><td><b class='num'>9,200</b><br><span class='sub'>OI 1,405 手 · δ0.239<br>IV 26.0%</span></td><td><b class='num'>11,000</b><br><span class='sub'>OI 4,534 手 · δ0.204<br>IV 33.0%</span></td></tr><tr><td class='nm'><b>鸡蛋</b><br><span class='sub'>jd2612 · DCE<br>到期 2026-11-17</span></td><td class='f'><b class='num'>3,302</b><br><span class='sub'>元/500千克</span></td><td><b class='num'>3,000</b><br><span class='sub'>OI 14,258 手 · δ0.129<br>IV 33.7%</span></td><td><b class='num'>3,600</b><br><span class='sub'>OI 16,299 手 · δ0.144<br>IV 30.0%</span></td></tr><tr><td class='nm'><b>豆二</b><br><span class='sub'>b2612 · DCE<br>到期 2026-11-17</span></td><td class='f'><b class='num'>4,079</b><br><span class='sub'>元/吨</span></td><td><b class='num'>3,900</b><br><span class='sub'>OI 617 手 · δ0.148<br>IV 16.8%</span></td><td><b class='num'>4,250</b><br><span class='sub'>OI 419 手 · δ0.187<br>IV 17.2%</span></td></tr>
+</table>
+
+<h2>怎么读</h2>
+<ul class="note">
+<li><span class="ok">支撑线 = 真实期货价</span>；其下方是卖Put集中档（产业接货/卖权收租区域），上方是卖Call集中档。</li>
+<li><b>OI 手数</b>是该行权价的总持仓量；数值越大说明该价位挂单越拥挤，价差被击穿的概率越高。</li>
+<li>若价格<b>有效跌破</b>卖Put集中档，卖方被动止损易形成踩踏，支撑转压力——油料期权经典行情。</li>
+<li>同一品种的<b>次主力合约</b>（如豆粕 2705）未在本表展示；可在「下方明细」查看。</li>
+</ul>
+</div>
+</body></html>

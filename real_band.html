@@ -1,0 +1,40 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CBOT 卖Put/卖Call 理论价位带 · 真实行情</title>
+<style>
+ body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;margin:0;background:#f5f7fa;color:#1a1a1a}
+ .banner{background:#1f7a3d;color:#fff;padding:10px 18px;font-size:14px}
+ .banner b{background:#0c3;padding:1px 6px;border-radius:3px;color:#042}
+ .warn{background:#fff4e5;color:#8a4b00;border:1px solid #ffd8a8;padding:10px 18px;font-size:13px}
+ .card{background:#fff;margin:18px;padding:18px;border-radius:10px;box-shadow:0 1px 4px #0001}
+ h1{font-size:20px;margin:0 0 4px} h2{font-size:16px;margin:18px 0 8px}
+ table{border-collapse:collapse;width:100%;font-size:13px}
+ th,td{border:1px solid #e3e8ef;padding:8px 10px;text-align:center;vertical-align:middle}
+ th{background:#eef2f7} td:nth-child(1){text-align:left}
+ .note{color:#666;font-size:12px;line-height:1.6}
+ .ok{color:#1f7a3d;font-weight:600}
+</style></head><body>
+<div class="banner">✅ <b>真实行情</b>：期货价来自新浪财经（免费公开，2026-10-23 抓取） &nbsp;|&nbsp;
+理论价位带 = 真实价 + 假设IV 经 Black-76 推算 <b>非真实 OI 拥挤度</b></div>
+<div class="warn">⚠️ 诚实声明：本面板给出的是「卖权收租理论上应落在哪个虚值价位带」，由<b>真实期货价</b>推算；
+它<b>不是</b>「哪个价位 OI 最集中」——后者必须真实逐档持仓量（QuikStrike/CME 导出）。IV 为历史波动近似假设，带会随 IV/到期日变化而平移。</div>
+<div class="card">
+<h1>CBOT 农产品 · 卖Put上沿 / 卖Call下沿（OTM Δ≈0.25，价格两侧收租区）</h1>
+<div class="note">判定逻辑（沿用豆包框架的核心先验）：产业卖权收租几乎都在中度虚值（Δ 0.10–0.25）挂单。
+下列「卖Put上沿」= 价格下方、最靠近平值的 OTM Put（Δ≈0.25）；「卖Call下沿」= 价格上方、最靠近平值的 OTM Call（Δ≈0.25）。
+两者夹住真实期货价，构成「产业愿意接货/卖权收租」的理论边界。</div>
+<table>
+<tr><th>品种</th><th>支撑线·真实期货价<br>(新浪 2026-10-23)</th><th>卖Put上沿<br>(价格下方 Δ≈0.25)</th><th>卖Call下沿<br>(价格上方 Δ≈0.25)</th></tr>
+<tr><td><b>CBOT大豆</b><br><span style='color:#666'>美国大豆 · hf_S</span></td><td><b>1264.0</b><br><span style='color:#666'>$12.64/bu</span></td><td><b>1210</b><br><span style='color:#666'>$12.10/bu</span></td><td><b>1345</b><br><span style='color:#666'>$13.43/bu</span></td></tr><tr><td><b>CBOT豆粕</b><br><span style='color:#666'>美黄豆粉 · hf_SM</span></td><td><b>347.4</b><br><span style='color:#666'>$347.4/ton</span></td><td><b>330</b><br><span style='color:#666'>$328.6/ton</span></td><td><b>375</b><br><span style='color:#666'>$374.9/ton</span></td></tr><tr><td><b>CBOT玉米</b><br><span style='color:#666'>美国玉米 · hf_C</span></td><td><b>458.5</b><br><span style='color:#666'>$4.58/bu</span></td><td><b>435</b><br><span style='color:#666'>$4.36/bu</span></td><td><b>490</b><br><span style='color:#666'>$4.91/bu</span></td></tr><tr><td><b>CBOT豆油</b><br><span style='color:#666'>美黄豆油 · hf_BO</span></td><td><b>66.70</b><br><span style='color:#666'>$0.667/lb</span></td><td><b>63.00</b><br><span style='color:#666'>$0.628/lb</span></td><td><b>72.50</b><br><span style='color:#666'>$0.724/lb</span></td></tr>
+</table>
+<h2>怎么读</h2>
+<ul class="note">
+<li><span class="ok">绿色横幅=真实数据</span>：期货价是新浪实时/延迟真实报价；价位带是用它+期权定价模型算出的<b>位置</b>，不是编造的 OI 数字。</li>
+<li><b>支撑线=真实期货价</b>；其下方「卖Put上沿」、上方「卖Call下沿」是卖权收租最密集的理论边界（δ0.25）。整条虚值带向更深处延伸到 δ0.10。</li>
+<li>要到"真实最集中价位"，还需把 QuikStrike 的 OI-by-strike 导出喂进来——届时本面板的"真实期货价"不变，额外叠加真实的 OI 拥挤度评分。</li>
+<li>若价格<b>有效跌破</b>卖Put带，卖方被动止损易踩踏，支撑变压力（油料期权经典行情）。</li>
+</ul>
+<div class="note">方法学：无风险利率 4.5%，近月期权到期 45 天近似；IV 为近一年历史波动率近似（大豆22%/豆粕28%/玉米25%/豆油30%）。
+精确到合约月份(NOV/JAN)的带会略有偏移，本版用主连价近似。</div>
+</div>
+</body></html>
